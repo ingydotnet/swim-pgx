@@ -1,9 +1,11 @@
 ---
-+grammar: kwim
++grammar: swim
 +toprule: document
 +version: 0.0.1
 block_blank:
   .ref: line_blank
+block_code:
+  .rgx: \\\\\\
 block_comment:
   .rgx: \#\#\#\r?\n((?:.*?\r?\n)*?)\#\#\#\r?\n(?:\ *\r?\n)?
 block_head:
@@ -15,15 +17,17 @@ block_list:
   - .ref: block_list_number
   - .ref: block_list_data
 block_list_bullet:
-  .rgx: (\*\ .*\r?\n(?:\*\ .*\r?\n|(?:\ *\r?\n)*\ \ .*\r?\n)*(?:\ *\r?\n)?)
+  .rgx: (\*\ .*\r?\n(?:\*\ .*\r?\n|(?:\ *\r?\n)|\ \ .*\r?\n)*(?:\ *\r?\n)?)
 block_list_data:
   .rgx: (\-\ .*\r?\n(?:\-\ .*\r?\n|(?:\ *\r?\n)|\ \ .*\r?\n)*)
 block_list_number:
-  .rgx: (\+\ .*\r?\n(?:\+\ .*\r?\n|(?:\ *\r?\n)*\ \ .*\r?\n)*(?:\ *\r?\n)?)
+  .rgx: (\+\ .*\r?\n(?:\+\ .*\r?\n|(?:\ *\r?\n)|\ \ .*\r?\n)*(?:\ *\r?\n)?)
 block_para:
   .rgx: ((?:(?![\ \*=\#\n]\ ).*\S.*(?:\r?\n|\z))+)(?:\ *\r?\n)?
 block_pref:
   .rgx: ((?:(?:\ *\r?\n)*\ \ .*\r?\n)+)(?:\ *\r?\n)?
+block_rule:
+  .rgx: \-{4}\r?\n(?:\ *\r?\n)?
 block_title:
   .rgx: ((?:(?![\ \*=\#\n]\ ).*\S.*(?:\r?\n|\z)))={3,}\r?\n(?:(?:\ *\r?\n)((?:(?![\
     \*=\#\n]\ ).*\S.*(?:\r?\n|\z)))(?=(?:\ *\r?\n)|\z))?(?:\ *\r?\n)?
@@ -32,7 +36,9 @@ block_top:
   - .ref: block_blank
   - .ref: block_comment
   - .ref: line_comment
+  - .ref: block_rule
   - .ref: block_head
+  - .ref: block_code
   - .ref: block_pref
   - .ref: block_list
   - .ref: block_title
