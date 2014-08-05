@@ -13,6 +13,7 @@ block-top:
   | block-comment
   | line-comment
   | block-rule
+  | block-meta
   | block-head
   | block-code
   | block-pref
@@ -40,6 +41,12 @@ line-comment: /
 block-rule: /
   DASH{4} EOL
   line-blank?
+/
+
+block-meta: /
+  DASH{3} EOL
+  ( ALL*? EOL | )
+  DOT{3} EOL
 /
 
 block-head: /
@@ -150,6 +157,7 @@ text-markup: phrase-markup+
 phrase-markup:
   | phrase-text
   | marker-escape
+  | phrase-meta
   | phrase-func
   | phrase-code
   | phrase-bold
@@ -172,6 +180,12 @@ phrase-code: /
   marker-code
   ( [^ marker-code]*? )
   marker-code
+/
+
+phrase-meta: /
+  marker-func-start '$'
+  ( [^ marker-func-end]+ )
+  marker-func-end
 /
 
 phrase-func: /

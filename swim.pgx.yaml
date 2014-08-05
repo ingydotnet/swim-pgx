@@ -22,6 +22,8 @@ block_list_data:
   .rgx: (\-\ .*\r?\n(?:\-\ .*\r?\n|(?:\ *\r?\n)|\ \ .*\r?\n)*)
 block_list_number:
   .rgx: (\+\ .*\r?\n(?:\+\ .*\r?\n|(?:\ *\r?\n)|\ \ .*\r?\n)*(?:\ *\r?\n)?)
+block_meta:
+  .rgx: \-{3}\r?\n([\s\S]*?\r?\n|)\.{3}\r?\n
 block_para:
   .rgx: ((?:(?![\ \*=\#\n]\ ).*\S.*(?:\r?\n|\z))+)(?:\ *\r?\n)?
 block_pref:
@@ -37,6 +39,7 @@ block_top:
   - .ref: block_comment
   - .ref: line_comment
   - .ref: block_rule
+  - .ref: block_meta
   - .ref: block_head
   - .ref: block_code
   - .ref: block_pref
