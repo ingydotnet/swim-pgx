@@ -262,6 +262,7 @@ marker-phrase-start: /
   marker-bold
   marker-emph
   marker-del
+  marker-under
   marker-link
   marker-esc
 /
