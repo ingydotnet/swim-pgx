@@ -1,10 +1,10 @@
 # Pegex grammar for the Swim markup language
 #
-#   Copyright 2014. Ingy döt Net <ingy@ingy.net>
+#   Copyright 2014-2015. Ingy döt Net <ingy@ingy.net>
 #
 
 %grammar swim
-%version 0.0.1
+%version 0.0.2
 
 document: block-top*
 
@@ -25,48 +25,41 @@ block-top:
 block-blank: line-blank
 
 block-comment: /
-  HASH HASH HASH EOL
-  (
-    (: ANY*? EOL)*?
-  )
-  HASH HASH HASH EOL
+  HASH{3} EOL
+  ( line*? )
+  HASH{3} END
   line-blank?
 /
 
 line-comment: /
-  HASH SPACE? ( ANY*? ) EOL
+  HASH SPACE? ( ANY*? ) END
   line-blank?
 /
 
 block-rule: /
-  DASH{4} EOL
+  DASH{4} END
   line-blank?
 /
 
 block-meta: /
   DASH{3} EOL
   ( ALL*? EOL | )
-  DOT{3} EOL
+  DOT{3} END
+  line-blank?
 /
 
 block-head: /
   ( EQUAL{1,4} ) SPACE+ (:
-    ( ANY+? ) SPACE+ EQUAL+ EOL
-  | ( ANY+ EOL (: [^ WS ] ANY* EOL )* [^ WS ] ANY*? ) SPACE+ EQUAL+ EOL
-  | ( ANY+ EOL (: [^ WS ] ANY* EOL )*) (= [ marker-block-start ] | EOL | EOS)
+    ( ANY+? ) SPACE+ EQUAL+ END
+  | ( ANY+ EOL (: [^ WS ] ANY* EOL )* [^ WS ] ANY*? ) SPACE+ EQUAL+ END
+  | ( ANY+ EOL (: [^ WS ] ANY* EOL )*) (= [ marker-block-start ] | END )
   ) line-blank?
 /
 
 block-code: /
-  BACK BACK BACK
-/
-block-pref: /
-  (
-    (:
-      line-blank*
-      SPACE SPACE ANY* EOL
-    )+
-  )
+  BACK{3} EOL
+  ( line*? )
+  BACK{3} END
   line-blank?
 /
 
@@ -74,7 +67,7 @@ block-pref: /
   (
     (:
       line-blank*
-      SPACE SPACE ANY* EOL
+      SPACE SPACE ANY* END
     )+
   )
   line-blank?
@@ -88,13 +81,11 @@ block-list:
 block-list-bullet: /(
   line-list-item-bullet
   (: line-list-item-bullet | line-blank | line-indented )*
-  line-blank?
 )/
 
 block-list-number: /(
   line-list-item-number
   (: line-list-item-number | line-blank | line-indented )*
-  line-blank?
 )/
 
 block-list-data: /(
@@ -103,15 +94,15 @@ block-list-data: /(
 )/
 
 line-list-item-bullet: /
-  STAR SPACE ANY* EOL
+  STAR SPACE ANY* END
 /
 
 line-list-item-number: /
-  PLUS SPACE ANY* EOL
+  PLUS SPACE ANY* END
 /
 
 line-list-item-data: /
-  DASH SPACE ANY* EOL
+  DASH SPACE ANY* END
 /
 
 block-list-item: (
@@ -127,7 +118,7 @@ block-list-item: (
 )*
 
 line-indented: /
-  SPACE SPACE ANY* EOL
+  SPACE{2} ANY* END
 /
 
 block-title: /
@@ -136,7 +127,7 @@ block-title: /
   (:
     line-blank
     ( text-line )
-    (= line-blank | EOS )
+    (= line-blank )
   )?
   line-blank?
 /
@@ -182,8 +173,10 @@ phrase-code: /
   marker-code
 /
 
+# This is just a special case of phrase-func.
+# Should be removed and handled there.
 phrase-meta: /
-  marker-func-start '$'
+  marker-func-start DOLLAR
   ( [^ marker-func-end]+ )
   marker-func-end
 /
@@ -245,9 +238,13 @@ phrase-link-plain: /
 
 marker-next: / ( ALL ) /
 
-text-line: / (: (! [ marker-block-start NL ] SPACE) ANY* NS ANY* (: EOL | EOS ) ) /
+line: / (: ANY* END ) /
 
-line-blank: / (: SPACE* EOL ) /
+text-line: / (: (! [ marker-block-start NL ] SPACE) ANY* NS ANY* END ) /
+
+line-blank: / (: SPACE* END ) /
+
+END: / (: EOL | EOS ) /
 
 marker-block-start: /
   marker-pref
