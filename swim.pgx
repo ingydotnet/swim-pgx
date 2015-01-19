@@ -242,7 +242,7 @@ line: / (: ANY* END ) /
 
 text-line: / (: (! [ marker-block-start NL ] SPACE) ANY* NS ANY* END ) /
 
-line-blank: / (: SPACE* END ) /
+line-blank: / (: SPACE+ END | EOL ) /
 
 END: / (: EOL | EOS ) /
 
