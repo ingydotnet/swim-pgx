@@ -3,6 +3,8 @@ export PERL5LIB=../pegex-pm/lib
 COMPILE_COMMAND = pegex compile $(OPTIONS) --to=
 ALL = $(GRAMMAR:%=%.yaml) $(GRAMMAR:%=%.json)
 
+export PEGEX_COMBINATE_RULES = document text_markup block_list_item
+
 all: $(ALL)
 
 $(ALL): $(GRAMMAR) Makefile

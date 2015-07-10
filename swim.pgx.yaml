@@ -22,6 +22,18 @@ block_list_bullet:
   .rgx: (\*\ .*(?:\r?\n|\z)(?:\*\ .*(?:\r?\n|\z)|(?:\ +(?:\r?\n|\z)|\r?\n)|\ {2}.*(?:\r?\n|\z))*)
 block_list_data:
   .rgx: (\-\ .*(?:\r?\n|\z)(?:\-\ .*(?:\r?\n|\z)|(?:\ +(?:\r?\n|\z)|\r?\n)|\ {2}.*(?:\r?\n|\z))*)
+block_list_item:
+  +min: 0
+  .any:
+  - .ref: block_blank
+  - .ref: block_comment
+  - .ref: line_comment
+  - .ref: block_head
+  - .ref: block_pref
+  - .ref: block_list
+  - .ref: block_title
+  - .ref: block_verse
+  - .ref: block_para
 block_list_number:
   .rgx: (\+\ .*(?:\r?\n|\z)(?:\+\ .*(?:\r?\n|\z)|(?:\ +(?:\r?\n|\z)|\r?\n)|\ {2}.*(?:\r?\n|\z))*)
 block_meta:
@@ -59,3 +71,95 @@ line_blank:
   .rgx: (?:\ +(?:\r?\n|\z)|\r?\n)
 line_comment:
   .rgx: \#\ ?(.*?)(?:\r?\n|\z)(?:\ +(?:\r?\n|\z)|\r?\n)?
+marker_bold:
+  .rgx: \*
+marker_del:
+  .rgx: \-\-
+marker_emph:
+  .rgx: /
+marker_escape:
+  .rgx: \\(.)
+marker_next:
+  .rgx: ([\s\S])
+marker_under:
+  .rgx: _
+phrase_bold:
+  .all:
+  - .rgx: \*(?=\S)(?!\*)
+  - +min: 1
+    .all:
+    - +asr: -1
+      .ref: marker_bold
+    - .ref: phrase_markup
+  - .ref: marker_bold
+phrase_code:
+  .rgx: '`([^`]*?)`'
+phrase_del:
+  .all:
+  - .rgx: \-\-(?=\S)(?!\-\-)
+  - +min: 1
+    .all:
+    - +asr: -1
+      .ref: marker_del
+    - .ref: phrase_markup
+  - .ref: marker_del
+phrase_emph:
+  .all:
+  - .rgx: /(?=\S)(?!/)
+  - +min: 1
+    .all:
+    - +asr: -1
+      .ref: marker_emph
+    - .ref: phrase_markup
+  - .ref: marker_emph
+phrase_func:
+  .rgx: <([^\>]+)\>
+phrase_hyper:
+  .any:
+  - .ref: phrase_hyper_named
+  - .ref: phrase_hyper_explicit
+  - .ref: phrase_hyper_implicit
+phrase_hyper_explicit:
+  .rgx: \[(https?:\S*?)\]
+phrase_hyper_implicit:
+  .rgx: (https?:\S+)
+phrase_hyper_named:
+  .rgx: '"([^"]+)"\[(https?:\S*?)\]'
+phrase_link:
+  .any:
+  - .ref: phrase_link_named
+  - .ref: phrase_link_plain
+phrase_link_named:
+  .rgx: '"([^"]+)"\[(\S*?)\]'
+phrase_link_plain:
+  .rgx: \[(\S*?)\]
+phrase_markup:
+  .any:
+  - .ref: phrase_text
+  - .ref: marker_escape
+  - .ref: phrase_meta
+  - .ref: phrase_func
+  - .ref: phrase_code
+  - .ref: phrase_bold
+  - .ref: phrase_emph
+  - .ref: phrase_del
+  - .ref: phrase_under
+  - .ref: phrase_hyper
+  - .ref: phrase_link
+  - .ref: marker_next
+phrase_meta:
+  .rgx: <\$([^\>]+)\>
+phrase_text:
+  .rgx: ((?:(?![<`\*/\-\-_"\[\\]|https?:)[\s\S])+)
+phrase_under:
+  .all:
+  - .rgx: _(?=\S)(?!_)
+  - +min: 1
+    .all:
+    - +asr: -1
+      .ref: marker_under
+    - .ref: phrase_markup
+  - .ref: marker_under
+text_markup:
+  +min: 1
+  .ref: phrase_markup
